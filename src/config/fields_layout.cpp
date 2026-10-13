@@ -29,6 +29,14 @@ namespace umbriel {
       return choices;
     }
 
+    const registry::Choices<HorizontalStrutsWhen>& horizontalStrutsModes() {
+      static const registry::Choices<HorizontalStrutsWhen> choices{
+          {.name = "always", .value = HorizontalStrutsWhen::Always},
+          {.name = "overflow", .value = HorizontalStrutsWhen::Overflow},
+      };
+      return choices;
+    }
+
     const registry::Choices<MasterPosition>& masterPositions() {
       static const registry::Choices<MasterPosition> choices{
           {.name = "left", .value = MasterPosition::Left},
@@ -169,6 +177,7 @@ namespace umbriel {
           integer("right", -kStrutLimit, kStrutLimit, &Struts::right),
           integer("top", -kStrutLimit, kStrutLimit, &Struts::top),
           integer("bottom", -kStrutLimit, kStrutLimit, &Struts::bottom),
+          choice("horizontal_when", &Struts::horizontalWhen, horizontalStrutsModes()),
       };
       static const Fields<Scrolling> scrolling{
           real("default_extent_fraction", 0.1, 1.0, &Scrolling::defaultExtentFraction),

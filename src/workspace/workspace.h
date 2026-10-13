@@ -90,6 +90,7 @@ namespace umbriel {
     // Normal tiled layout uses this box; floating, maximize-to-edges, and
     // fullscreen deliberately use their broader areas.
     [[nodiscard]] wlr_box tiledArea() const;
+    [[nodiscard]] wlr_box tiledArea(const wlr_box& usable) const;
     // Tiled view box used for presentation. Maximize-to-edges maps the
     // scrolling strip position back into the unstrutted usable area.
     [[nodiscard]] wlr_box presentedTiledBox(const View* view) const;

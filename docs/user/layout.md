@@ -66,6 +66,20 @@ top = 0
 bottom = 0
 ```
 
+For horizontal scrolling strips, `horizontal_when = "overflow"` uses zero
+left/right struts when all columns fit:
+
+```toml
+[layout.struts]
+left = 16
+right = 16
+horizontal_when = "overflow"
+```
+
+Fit is measured before horizontal struts, including size constraints and gaps.
+Top/bottom struts and other layouts are unchanged. Default: `"always"`.
+Workspace rules can override this setting.
+
 Positive struts reserve extra space inside layer-shell exclusive zones.
 Negative values let tiled windows extend beneath panels or beyond an output
 edge. Floating windows and popups ignore struts.

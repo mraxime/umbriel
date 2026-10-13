@@ -41,11 +41,14 @@ namespace umbriel {
     OnOverflow,
   };
 
+  enum class HorizontalStrutsWhen : uint8_t { Always, Overflow };
+
   struct LayoutStruts {
     int left = 0;
     int right = 0;
     int top = 0;
     int bottom = 0;
+    HorizontalStrutsWhen horizontalWhen = HorizontalStrutsWhen::Always;
     bool operator==(const LayoutStruts&) const = default;
   };
 
@@ -54,6 +57,7 @@ namespace umbriel {
     std::optional<int> right;
     std::optional<int> top;
     std::optional<int> bottom;
+    std::optional<HorizontalStrutsWhen> horizontalWhen;
     bool operator==(const LayoutStrutOverrides&) const = default;
   };
 

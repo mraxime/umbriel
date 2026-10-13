@@ -218,6 +218,10 @@ namespace umbriel {
       }
       const LayoutStruts& struts = layout.layoutConfig()->struts;
       const bool vertical = layout.layoutConfig()->scrolling.direction == ScrollingDirection::Vertical;
+      // A lone column has no conditional strut band.
+      if (!vertical && struts.horizontalWhen == HorizontalStrutsWhen::Overflow && layout.columns().size() == 1) {
+        return {};
+      }
       return vertical ? ColumnBleed{.before = struts.top, .after = struts.bottom}
                       : ColumnBleed{.before = struts.left, .after = struts.right};
     }
@@ -441,6 +445,26 @@ namespace umbriel {
         static_cast<double>(std::max(1, width) + gap) / static_cast<double>(std::max(1, viewportPrimary) + gap);
     column.savedWidthFrac = 0.0;
     return true;
+  }
+
+  LayoutStruts ScrollingLayout::effectiveStruts(const wlr_box& usable) const {
+    LayoutStruts struts = m_config->struts;
+    if (vertical() || struts.horizontalWhen == HorizontalStrutsWhen::Always) {
+      return struts;
+    }
+
+    const int viewport = std::max(1, usable.width - 2 * m_config->edgePad);
+    // A viewport-filling column fits alone, but overflows with any neighbour.
+    const bool overflows = m_columns.size() > 1
+        && (std::ranges::any_of(m_columns, [this](const Column& column) { return columnFillsViewport(column, *this); })
+            || rawTotalWidth(viewport) > viewport);
+    if (overflows) {
+      return struts;
+    }
+
+    struts.left = 0;
+    struts.right = 0;
+    return struts;
   }
 
   int ScrollingLayout::centeringOffset(int viewportPrimary) const {

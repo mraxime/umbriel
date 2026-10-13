@@ -612,7 +612,12 @@ namespace umbriel {
     return area;
   }
 
-  wlr_box Workspace::tiledArea() const { return applyLayoutStruts(usableArea(), m_layoutConfig.struts); }
+  wlr_box Workspace::tiledArea() const { return tiledArea(usableArea()); }
+
+  wlr_box Workspace::tiledArea(const wlr_box& usable) const {
+    const ScrollingLayout* scrolling = scrollingLayout();
+    return applyLayoutStruts(usable, scrolling != nullptr ? scrolling->effectiveStruts(usable) : m_layoutConfig.struts);
+  }
 
   wlr_box Workspace::presentedTiledBox(const View* view) const { return tiledTargetBox(view, usableArea()); }
 
@@ -744,7 +749,7 @@ namespace umbriel {
       return;
     }
 
-    m_layout->arrange(applyLayoutStruts(usable, m_layoutConfig.struts));
+    m_layout->arrange(tiledArea(usable));
     // Tab visibility follows the layout on hidden workspaces too, so a workspace always comes back showing the right
     // tabs.
     m_tabs.sync();
@@ -1212,7 +1217,7 @@ namespace umbriel {
     }
     if (scrollingLayout() != nullptr) {
       const bool vertical = scrollingVertical();
-      const wlr_box tiled = applyLayoutStruts(usable, m_layoutConfig.struts);
+      const wlr_box tiled = tiledArea(usable);
       if (vertical) {
         target.x = usable.x;
         target.y = usable.y + target.y - tiled.y;

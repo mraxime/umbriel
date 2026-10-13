@@ -70,6 +70,7 @@ UMBRIEL_TEST(workspaceOverridesApplyGlobalThenOutputSpecificRules) {
   global.layout.gap = 12;
   global.layout.struts.left = 10;
   global.layout.struts.top = 30;
+  global.layout.struts.horizontalWhen = umbriel::HorizontalStrutsWhen::Overflow;
   global.layout.scrolling.defaultExtentFraction = 0.6;
   global.layout.master.defaultWidthFraction = 0.6;
   global.layout.master.newOnTop = true;
@@ -81,6 +82,7 @@ UMBRIEL_TEST(workspaceOverridesApplyGlobalThenOutputSpecificRules) {
   dpOne.output = "DP-1";
   dpOne.layout.gap = 20;
   dpOne.layout.struts.right = 20;
+  dpOne.layout.struts.horizontalWhen = umbriel::HorizontalStrutsWhen::Always;
   dpOne.layout.mode = LayoutMode::Dwindle;
   dpOne.layout.master.position = umbriel::MasterPosition::Left;
   dpOne.layout.master.defaultWidthFraction = 0.7;
@@ -104,6 +106,7 @@ UMBRIEL_TEST(workspaceOverridesApplyGlobalThenOutputSpecificRules) {
   CHECK_EQ(onDpOne.struts.right, 20);
   CHECK_EQ(onDpOne.struts.top, 30);
   CHECK_EQ(onDpOne.struts.bottom, 4);
+  CHECK(onDpOne.struts.horizontalWhen == umbriel::HorizontalStrutsWhen::Always);
   CHECK(onDpOne.scrolling.defaultExtentFraction.has_value());
   CHECK_EQ(*onDpOne.scrolling.defaultExtentFraction, 0.6);
   CHECK(onDpOne.master.position == umbriel::MasterPosition::Left);
@@ -119,6 +122,7 @@ UMBRIEL_TEST(workspaceOverridesApplyGlobalThenOutputSpecificRules) {
   CHECK_EQ(onDpTwo.struts.right, 2);
   CHECK_EQ(onDpTwo.struts.top, 30);
   CHECK_EQ(onDpTwo.struts.bottom, 4);
+  CHECK(onDpTwo.struts.horizontalWhen == umbriel::HorizontalStrutsWhen::Overflow);
   CHECK(onDpTwo.scrolling.defaultExtentFraction.has_value());
   CHECK_EQ(*onDpTwo.scrolling.defaultExtentFraction, 0.6);
   CHECK(onDpTwo.master.position == umbriel::MasterPosition::Right);

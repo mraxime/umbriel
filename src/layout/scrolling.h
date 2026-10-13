@@ -104,6 +104,9 @@ namespace umbriel {
     [[nodiscard]] double topGapWeight(int columnIndex) const;
     [[nodiscard]] double bottomGapWeight(int columnIndex) const;
 
+    // Resolve conditional struts against the usable area, before horizontal struts are applied.
+    [[nodiscard]] LayoutStruts effectiveStruts(const wlr_box& usable) const;
+
     [[nodiscard]] TabbedContainers* tabbedContainers() override { return this; }
     bool setTabbed(const View* view, bool tabbed) override;
     bool selectTab(const View* view) override;

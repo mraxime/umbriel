@@ -102,6 +102,9 @@ namespace umbriel {
       if (overrides.struts.bottom) {
         resolved.struts.bottom = *overrides.struts.bottom;
       }
+      if (overrides.struts.horizontalWhen) {
+        resolved.struts.horizontalWhen = *overrides.struts.horizontalWhen;
+      }
       if (overrides.scrolling.defaultExtentFraction) {
         resolved.scrolling.defaultExtentFraction = overrides.scrolling.defaultExtentFraction;
       }

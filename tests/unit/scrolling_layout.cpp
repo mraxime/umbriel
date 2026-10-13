@@ -63,6 +63,68 @@ namespace {
 
 } // namespace
 
+UMBRIEL_TEST(horizontalStrutsOnlyApplyOnOverflow) {
+  Fixture fixture;
+  fixture.config.struts = {
+      .left = 16, .right = 16, .top = 7, .bottom = 9, .horizontalWhen = umbriel::HorizontalStrutsWhen::Overflow
+  };
+  auto withoutHorizontal = fixture.config.struts;
+  withoutHorizontal.left = 0;
+  withoutHorizontal.right = 0;
+
+  CHECK(fixture.layout.effectiveStruts(kUsable) == withoutHorizontal);
+  fixture.layout.insertView(stub(0), 0);
+  CHECK(fixture.layout.effectiveStruts(kUsable) == withoutHorizontal);
+  fixture.layout.insertView(stub(1), 1);
+  CHECK(fixture.layout.effectiveStruts(kUsable) == withoutHorizontal);
+  fixture.layout.insertView(stub(2), 2);
+  CHECK(fixture.layout.effectiveStruts(kUsable) == fixture.config.struts);
+  fixture.layout.removeView(stub(2));
+  CHECK(fixture.layout.effectiveStruts(kUsable) == withoutHorizontal);
+}
+
+UMBRIEL_TEST(horizontalStrutsFollowColumnConstraintsAndResize) {
+  Fixture fixture;
+  fixture.config.struts = {.left = 16, .right = 16, .horizontalWhen = umbriel::HorizontalStrutsWhen::Overflow};
+  fixture.addColumns(2);
+  fixture.layout.setConstraints([](const View*) { return LayoutConstraints{.minWidth = 700}; });
+  CHECK_EQ(fixture.layout.effectiveStruts(kUsable).left, 16);
+  CHECK_EQ(fixture.layout.effectiveStruts(wlr_box{0, 0, 1600, 720}).left, 0);
+  fixture.layout.setConstraints([](const View*) { return LayoutConstraints{.maxWidth = 300}; });
+  fixture.layout.insertView(stub(2), 2);
+  CHECK_EQ(fixture.layout.effectiveStruts(kUsable).left, 0);
+}
+
+UMBRIEL_TEST(horizontalStrutsHandleViewportFillingColumns) {
+  const std::array<umbriel::LayoutConstraintsFn, 2> constraints{
+      [](const View* view) { return LayoutConstraints{.fullscreen = view == stub(0)}; },
+      [](const View* view) { return LayoutConstraints{.maximizedToEdges = view == stub(0)}; },
+  };
+  for (auto constraint : constraints) {
+    Fixture fixture;
+    fixture.config.struts = {.left = 16, .right = 16, .horizontalWhen = umbriel::HorizontalStrutsWhen::Overflow};
+    fixture.layout.setConstraints(constraint);
+    fixture.addColumns(1);
+    CHECK_EQ(fixture.layout.effectiveStruts(kUsable).left, 0);
+    CHECK_EQ(fixture.layout.columnX(0, kViewport), 0);
+    fixture.layout.insertView(stub(1), 1);
+    CHECK(fixture.layout.effectiveStruts(kUsable) == fixture.config.struts);
+    CHECK_EQ(fixture.layout.columnX(0, kViewport - 32), 16);
+  }
+}
+
+UMBRIEL_TEST(horizontalStrutsAlwaysApplyWhenConfigured) {
+  Fixture fixture;
+  fixture.config.struts = {.left = 16, .right = 16, .horizontalWhen = umbriel::HorizontalStrutsWhen::Always};
+  CHECK(fixture.layout.effectiveStruts(kUsable) == fixture.config.struts);
+}
+
+UMBRIEL_TEST(horizontalStrutsStayFixedInVerticalLayouts) {
+  Fixture fixture(ScrollingDirection::Vertical);
+  fixture.config.struts = {.left = 16, .right = 16, .horizontalWhen = umbriel::HorizontalStrutsWhen::Overflow};
+  CHECK(fixture.layout.effectiveStruts(kUsable) == fixture.config.struts);
+}
+
 // column bookkeeping
 UMBRIEL_TEST(insertAndRemoveTracksColumns) {
   Fixture fixture;

@@ -1,0 +1,59 @@
+# Maintainer: Maxime <mraxime@gmail.com>
+# Contributor: Noctalia Team <team@noctalia.dev>
+
+pkgname=umbriel-max-git
+pkgver=0.1.0.r1791894877.g8e6b9a0
+pkgrel=1
+epoch=1
+pkgdesc='Umbriel with conditional horizontal struts enabled by default'
+arch=('x86_64' 'aarch64')
+url='https://github.com/mraxime/umbriel'
+license=('MIT')
+depends=(
+  'cairo'
+  'gcc-libs'
+  'glibc'
+  'jemalloc'
+  'lcms2'
+  'libdrm'
+  'libdisplay-info'
+  'libglvnd'
+  'libinput'
+  'libxcb'
+  'libxkbcommon'
+  'mesa'
+  'pango'
+  'pixman'
+  'systemd-libs'
+  'tomlplusplus'
+  'wayland'
+  'xcb-util-wm'
+  'xorg-xwayland'
+  'xdg-desktop-portal-umbriel-git'
+  'wlroots0.20>=0.20.1'
+)
+makedepends=('git' 'meson' 'ninja' 'nlohmann-json' 'pkgconf' 'wayland-protocols')
+provides=('umbriel')
+conflicts=('umbriel')
+source=('umbriel::git+https://github.com/mraxime/umbriel.git#branch=feat/conditional-struts')
+b2sums=('SKIP')
+
+pkgver() {
+  cd "$srcdir/umbriel"
+  # Use commit time: rebases can reduce the commit count.
+  printf '%s.r%s.g%s' \
+    "$(tr -d '[:space:]' < VERSION)" \
+    "$(git log -1 --format=%ct)" \
+    "$(git rev-parse --short=7 HEAD)"
+}
+
+build() {
+  arch-meson "$srcdir/umbriel" "$srcdir/build" \
+    -Db_ndebug=true -Dtests=disabled -Dtest_ipc=disabled
+  meson compile -C "$srcdir/build"
+}
+
+package() {
+  DESTDIR="$pkgdir" meson install -C "$srcdir/build" --no-rebuild
+  install -Dm644 "$srcdir/umbriel/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,42 @@
+pkgbase = umbriel-max-git
+	pkgdesc = Umbriel with conditional horizontal struts enabled by default
+	pkgver = 0.1.0.r1791894877.g8e6b9a0
+	pkgrel = 1
+	epoch = 1
+	url = https://github.com/mraxime/umbriel
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	makedepends = git
+	makedepends = meson
+	makedepends = ninja
+	makedepends = nlohmann-json
+	makedepends = pkgconf
+	makedepends = wayland-protocols
+	depends = cairo
+	depends = gcc-libs
+	depends = glibc
+	depends = jemalloc
+	depends = lcms2
+	depends = libdrm
+	depends = libdisplay-info
+	depends = libglvnd
+	depends = libinput
+	depends = libxcb
+	depends = libxkbcommon
+	depends = mesa
+	depends = pango
+	depends = pixman
+	depends = systemd-libs
+	depends = tomlplusplus
+	depends = wayland
+	depends = xcb-util-wm
+	depends = xorg-xwayland
+	depends = xdg-desktop-portal-umbriel-git
+	depends = wlroots0.20>=0.20.1
+	provides = umbriel
+	conflicts = umbriel
+	source = umbriel::git+https://github.com/mraxime/umbriel.git#branch=feat/conditional-struts
+	b2sums = SKIP
+
+pkgname = umbriel-max-git

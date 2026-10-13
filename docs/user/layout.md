@@ -77,8 +77,8 @@ horizontal_when = "overflow"
 ```
 
 Fit is measured before horizontal struts, including size constraints and gaps.
-Top/bottom struts and other layouts are unchanged. Default: `"always"`.
-Workspace rules can override this setting.
+Top/bottom struts and other layouts are unchanged. Fork default: `"overflow"`;
+use `"always"` for fixed struts. Workspace rules can override this setting.
 
 Positive struts reserve extra space inside layer-shell exclusive zones.
 Negative values let tiled windows extend beneath panels or beyond an output

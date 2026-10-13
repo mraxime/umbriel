@@ -113,6 +113,10 @@ UMBRIEL_TEST(horizontalStrutsHandleViewportFillingColumns) {
   }
 }
 
+UMBRIEL_TEST(horizontalStrutsDefaultToOverflow) {
+  CHECK(defaultConfig().struts.horizontalWhen == umbriel::HorizontalStrutsWhen::Overflow);
+}
+
 UMBRIEL_TEST(horizontalStrutsAlwaysApplyWhenConfigured) {
   Fixture fixture;
   fixture.config.struts = {.left = 16, .right = 16, .horizontalWhen = umbriel::HorizontalStrutsWhen::Always};

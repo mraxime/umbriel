@@ -49,7 +49,7 @@ namespace umbriel {
     int right = 0;
     int top = 0;
     int bottom = 0;
-    HorizontalStrutsWhen horizontalWhen = HorizontalStrutsWhen::Always;
+    HorizontalStrutsWhen horizontalWhen = HorizontalStrutsWhen::Overflow;
     bool operator==(const LayoutStruts&) const = default;
   };
 
